@@ -12,9 +12,12 @@ intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
 
-bot = commands.Bot(command_prefix='.', description=description, intents=intents)
+bot = commands.Bot(command_prefix='.', description=description, intents=intents, help_command=None)
 
 load_dotenv()
+
+actions = ["start", "stop", "restart"]
+services = ["minecraft", "ftb", "sotf", "valheim", "beam"]
 
 @bot.event
 async def on_ready():
@@ -26,6 +29,23 @@ async def check_service_reply(ctx, service):
     if not service_boolean:
         await ctx.send("That is not a valid service")
     return service_boolean
+
+@bot.command()
+async def help(ctx):
+    helpText = "Syntax: `.[action] [service]`\n"
+
+    helpText += "\nActions:\n"
+    for action in actions:
+        helpText += "- {}\n".format(action)
+
+    helpText += "\nServices:\n"
+    for service in services:
+        helpText += "- {}\n".format(service)
+
+    helpText += "Example `.start minecraft`"
+
+    await ctx.send(helpText)               
+
 
 @bot.command()
 async def start(ctx, service: str):
@@ -42,7 +62,7 @@ async def stop(ctx, service: str):
         return
     match service:
         case _:
-            sendMessage("stop {}".format(service))
+            sendMessage("stop {}".format(convert_for_beanstalk(service)))
             await ctx.send("Stopping {} server...".format(service))
 
 @bot.command()
@@ -51,7 +71,7 @@ async def restart(ctx, service: str):
         return
     match service:
         case _:
-            sendMessage("restart {}".format(service))
+            sendMessage("restart {}".format(convert_for_beanstalk(service)))
             await ctx.send("Restarting {} server...".format(service))
 
 bot.run(os.getenv('DISCORD_TOKEN'))

@@ -1,4 +1,4 @@
-valid_services_file = open("allowed_services.txt", "r")
+valid_services_file = open("configs/allowed_services.txt", "r")
 valid_services = valid_services_file.read().splitlines()
 valid_services_file.close()
 
