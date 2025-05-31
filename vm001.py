@@ -1,4 +1,5 @@
 from helpers.beanstalk import *
+from helpers.validservices import *
 
 import os
 import discord
@@ -20,16 +21,25 @@ async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print('------')
 
+async def check_service_reply(ctx, service):
+    service_boolean = valid_service_bool(service)
+    if not service_boolean:
+        await ctx.send("That is not a valid service")
+    return service_boolean
 
 @bot.command()
 async def start(ctx, service: str):
+    if not await check_service_reply(ctx, service):
+        return
     match service:
         case _:
-            sendMessage("start {}".format(service))
+            sendMessage("start {}".format(convert_for_beanstalk(service)))
             await ctx.send("Starting {} server...".format(service))
 
 @bot.command()
 async def stop(ctx, service: str):
+    if not await check_service_reply(ctx, service):
+        return
     match service:
         case _:
             sendMessage("stop {}".format(service))
@@ -37,11 +47,11 @@ async def stop(ctx, service: str):
 
 @bot.command()
 async def restart(ctx, service: str):
+    if not await check_service_reply(ctx, service):
+        return
     match service:
         case _:
             sendMessage("restart {}".format(service))
             await ctx.send("Restarting {} server...".format(service))
-
-print(os.getenv('DISCORD_TOKEN'))
 
 bot.run(os.getenv('DISCORD_TOKEN'))

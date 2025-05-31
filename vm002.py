@@ -1,13 +1,10 @@
 from helpers.beanstalk import *
+from helpers.validservices import *
 
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
-
-valid_services_file = open("allowed_services.txt", "r")
-valid_services = valid_services_file.read().splitlines()
-valid_services_file.close()
 
 def send_command(command):
     if os.getenv('TESTING'):
@@ -41,14 +38,9 @@ def restart_service(service):
     stop_service(service)
     start_service(service)
 
-# Checks to see if the service can be conrolled, returns boolean
-def valid_service(service):
-    return service in valid_services
-
 for message in getAllMessages():
     splitMessage = message.split(" ")
-    if not valid_service(splitMessage[1]):
-        print("{} is not a valid service".format(splitMessage[1]))
+    if not valid_service_bool(splitMessage[1]):
         continue
     match splitMessage[0]:
         case "start":

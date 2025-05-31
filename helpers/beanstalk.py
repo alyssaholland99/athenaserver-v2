@@ -4,7 +4,17 @@ from pystalk import BeanstalkClient
 
 client = BeanstalkClient('vm001.hippocampus-augmented.ts.net', 11300)
 
+def convert_for_beanstalk(service):
+    match service:
+        case "sotf" | "sons of the forest":
+            return "sons_of_the_forest"
+        case "feed the beast":
+            return "ftb"
+        case _:
+            return service
+
 def sendMessage(message_to_send):
+    print(message_to_send)
     client.put_job(message_to_send)
 
 def getAllMessages():
