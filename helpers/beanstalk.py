@@ -10,6 +10,8 @@ def convert_for_beanstalk(service):
             return "sons_of_the_forest"
         case "feed the beast":
             return "ftb"
+        case "beam":
+            return "beammp"
         case _:
             return service
 

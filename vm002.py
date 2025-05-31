@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def send_command(command):
-    if os.getenv('TESTING'):
+    if False:
         print(command)
     else:
         os.system(command)
