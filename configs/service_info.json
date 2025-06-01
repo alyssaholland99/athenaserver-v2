@@ -1,0 +1,85 @@
+{
+    "beammp" : {
+        "vm" : "vm002",
+        "port": 101,
+        "url" : "server.alyssaserver.co.uk",
+        "aliases" : [
+            "beam",
+            "beammp"
+        ],
+        "start_permission" : 0,
+        "stop_permission" : 1,
+        "restart_permission" : 1
+    },
+    "sons_of_the_forest" : {
+        "vm" : "vm002",
+        "port": 101,
+        "url" : "server.alyssaserver.co.uk",
+        "aliases" : [
+            "sotf",
+            "sons_of_the_forest",
+            "sons of the forest"
+        ],
+        "start_permission" : 0,
+        "stop_permission" : 1,
+        "restart_permission" : 1
+    },
+    "minecraft" : {
+        "vm" : "vm002",
+        "port": 25565,
+        "url" : "server.alyssaserver.co.uk",
+        "aliases" : [
+            "minecraft",
+            "mine"
+        ],
+        "start_permission" : 0,
+        "stop_permission" : 1,
+        "restart_permission" : 1
+    },
+    "ftb" : {
+        "vm" : "vm002",
+        "port": 25565,
+        "url" : "server.alyssaserver.co.uk",
+        "aliases" : [
+            "ftb"
+        ],
+        "start_permission" : 0,
+        "stop_permission" : 1,
+        "restart_permission" : 1
+    },
+    "valheim" : {
+        "vm" : "vm002",
+        "port": 25565,
+        "url" : "server.alyssaserver.co.uk",
+        "aliases" : [
+            "valheim"
+        ],
+        "start_permission" : 0,
+        "stop_permission" : 1,
+        "restart_permission" : 1
+    },
+    "immich" : {
+        "vm" : "vm001",
+        "port" : 80,
+        "url" : "immich.alyssaserver.co.uk",
+        "aliases" : [
+            "immich",
+            "photos"
+        ],
+        "start_permission" : 2,
+        "stop_permission" : 2,
+        "restart_permission" : 2
+    },
+    "cloud" : {
+        "vm" : "vm001",
+        "port" : 80,
+        "url" : "cloud.alyssaserver.co.uk",
+        "aliases" : [
+            "cloud",
+            "nextcloud"
+        ],
+        "start_permission" : 2,
+        "stop_permission" : 2,
+        "restart_permission" : 2
+    }
+}

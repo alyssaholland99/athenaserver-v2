@@ -9,6 +9,11 @@ def getPermission(user):
     csv_data = getCsv()
     for line in csv_data:
         if line["id"] == user:
-            return line['permission']
+            return int(line['permission'])
+    return -1
         
-def setTrusted(user):
+def checkPermission(user, requiredPermission):
+    return getPermission(user) >= requiredPermission
+
+def setPermission(user, newPermission):
+    print("test")

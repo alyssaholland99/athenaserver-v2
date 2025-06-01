@@ -1,8 +1,10 @@
 from helpers.beanstalk import *
 from helpers.validservices import *
 from helpers.vmcontrol import startVM
+from helpers.checkpermissions import *
+from helpers.serviceinfo import getServiceField
 
-import os
+import os, json
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -20,6 +22,21 @@ load_dotenv()
 actions = ["start", "stop", "restart"]
 services = ["minecraft", "ftb", "sotf", "valheim", "beam"]
 
+no_permission_string = "You do not have permission to run this command, ask Alyssa to add you"
+
+async def check(ctx, service, action):
+
+    # Checks first to see if a user can execute a command
+    if not (checkPermission(ctx.message.author.id, getServiceField(service, "{}_permission".format(action)))):
+        await ctx.send(no_permission_string)
+        return True
+    
+    # Checks to see if the service is valid
+    if not await check_service_reply(ctx, service):
+        return True
+    
+    return False
+
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
@@ -31,7 +48,7 @@ async def check_service_reply(ctx, service):
         await ctx.send("That is not a valid service")
     return service_boolean
 
-@bot.command()
+@bot.command(pass_context=True)
 async def help(ctx):
     helpText = "Syntax: `.[action] [service]`\n"
 
@@ -48,33 +65,54 @@ async def help(ctx):
     await ctx.send(helpText)               
 
 
-@bot.command()
+@bot.command(pass_context=True)
 async def start(ctx, service: str):
-    if not await check_service_reply(ctx, service):
+
+    # Checks to see if the message is valid
+    if check(ctx, service, "start"):
         return
+    
     match service:
         case _:
-            startVM("vm002")
+            startVM(getServiceField(service, "vm"))
             sendMessage("start {}".format(convert_for_beanstalk(service)))
             await ctx.send("Starting {} server...".format(service))
 
-@bot.command()
+
+@bot.command(pass_context=True)
 async def stop(ctx, service: str):
-    if not await check_service_reply(ctx, service):
+
+    # Checks to see if the message is valid
+    if check(ctx, service, "stop"):
         return
+    
     match service:
         case _:
             sendMessage("stop {}".format(convert_for_beanstalk(service)))
             await ctx.send("Stopping {} server...".format(service))
 
-@bot.command()
+@bot.command(pass_context=True)
 async def restart(ctx, service: str):
-    if not await check_service_reply(ctx, service):
+    
+    # Checks to see if the message is valid
+    if check(ctx, service, "restart"):
         return
+    
     match service:
         case _:
-            startVM("vm002")
+            startVM(getServiceField(service, "vm"))
             sendMessage("restart {}".format(convert_for_beanstalk(service)))
             await ctx.send("Restarting {} server...".format(service))
+
+@bot.command(pass_context=True)
+async def permission(ctx, action, user):
+    match action:
+        case "add":
+            setPermission(user, type)
+            await ctx.send("Added user as type {}".format(type))
+        case "remove":
+            setPermission(user, type)
+            await ctx.send("Removed user as type {}".format(type))
+
 
 bot.run(os.getenv('DISCORD_TOKEN'))
