@@ -54,6 +54,7 @@ for message in getAllMessages():
             restart_service(splitMessage[1])
         case _:
             print("'{}' is not in the service controls".format(splitMessage[0]))
+    time.sleep(15)
 
 if services_running() <= 2:
     for retry in range(11):
