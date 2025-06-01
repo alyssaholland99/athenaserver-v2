@@ -9,7 +9,7 @@ def getPermission(user):
     with open('configs/permissions.csv', mode ='r') as permissionStore:
         csv_data = csv.reader(permissionStore)
         for line in csv_data:
-            if line[0] == user:
+            if int(line[0]) == user:
                 return int(line[1])
         return -1
         
