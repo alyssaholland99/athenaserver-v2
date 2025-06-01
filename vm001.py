@@ -69,7 +69,7 @@ async def help(ctx):
 async def start(ctx, service: str):
 
     # Checks to see if the message is valid
-    if check(ctx, service, "start"):
+    if await check(ctx, service, "start"):
         return
     
     match service:
@@ -83,7 +83,7 @@ async def start(ctx, service: str):
 async def stop(ctx, service: str):
 
     # Checks to see if the message is valid
-    if check(ctx, service, "stop"):
+    if await check(ctx, service, "stop"):
         return
     
     match service:
@@ -95,7 +95,7 @@ async def stop(ctx, service: str):
 async def restart(ctx, service: str):
     
     # Checks to see if the message is valid
-    if check(ctx, service, "restart"):
+    if await check(ctx, service, "restart"):
         return
     
     match service:
