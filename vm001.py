@@ -1,5 +1,6 @@
 from helpers.beanstalk import *
 from helpers.validservices import *
+from helpers.vmcontrol import startVM
 
 import os
 import discord
@@ -53,6 +54,7 @@ async def start(ctx, service: str):
         return
     match service:
         case _:
+            startVM("vm002")
             sendMessage("start {}".format(convert_for_beanstalk(service)))
             await ctx.send("Starting {} server...".format(service))
 
@@ -71,6 +73,7 @@ async def restart(ctx, service: str):
         return
     match service:
         case _:
+            startVM("vm002")
             sendMessage("restart {}".format(convert_for_beanstalk(service)))
             await ctx.send("Restarting {} server...".format(service))
 
