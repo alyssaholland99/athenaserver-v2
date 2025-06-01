@@ -8,6 +8,3 @@ def getServiceDetails(service):
 
 def getServiceField(service, field):
     return getServiceDetails(service)[field]
-
-print(getServiceField("minecraft", "port"))
-print(getServiceField("minecraft", "url"))
