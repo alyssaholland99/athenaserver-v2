@@ -14,6 +14,8 @@ def getPermission(user):
         return -1
         
 def checkPermission(user, requiredPermission):
+    print(getPermission(user))
+    print( requiredPermission)
     return getPermission(user) >= requiredPermission
 
 def setPermission(user, newPermission):
