@@ -6,11 +6,12 @@ def getCsv():
         
 
 def getPermission(user):
-    csv_data = getCsv()
-    for line in csv_data:
-        if line["id"] == user:
-            return int(line['permission'])
-    return -1
+    with open('configs/permissions.csv', mode ='r') as permissionStore:
+        csv_data = csv.reader(permissionStore)
+        for line in csv_data:
+            if line["id"] == user:
+                return int(line['permission'])
+        return -1
         
 def checkPermission(user, requiredPermission):
     return getPermission(user) >= requiredPermission
