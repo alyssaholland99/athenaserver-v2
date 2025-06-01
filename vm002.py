@@ -1,7 +1,7 @@
 from helpers.beanstalk import *
 from helpers.validservices import *
 
-import os
+import os, time
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -38,6 +38,9 @@ def restart_service(service):
     stop_service(service)
     start_service(service)
 
+def services_running():
+    return int(os.popen("docker ps | wc -l").read())
+
 for message in getAllMessages():
     splitMessage = message.split(" ")
     if not valid_service_bool(splitMessage[1]):
@@ -51,3 +54,19 @@ for message in getAllMessages():
             restart_service(splitMessage[1])
         case _:
             print("'{}' is not in the service controls".format(splitMessage[0]))
+
+if services_running() <= 2:
+    for retry in range(11):
+        time.sleep(30)
+        if retry == 10:
+            os.system("shutdown now")
+
+
+service_retry_count = 0
+service_timeout = 2 # Minutes until the vm shuts down when no services are running
+
+while services_running <= 2:
+    service_retry_count += 1
+    time.sleep(30)
+    if service_retry_count == service_timeout*2:
+        os.system("shutdown now")
