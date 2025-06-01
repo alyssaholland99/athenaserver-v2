@@ -1,7 +1,7 @@
 import csv
 
 def getCsv():
-    with open('../configs/permissions.csv', mode ='r') as permissionStore:
+    with open('configs/permissions.csv', mode ='r') as permissionStore:
         return csv.reader(permissionStore)
         
 
