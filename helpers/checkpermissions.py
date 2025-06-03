@@ -1,20 +1,16 @@
-import csv
+import json
 
-def getCsv():
-    with open('configs/permissions.csv', mode ='r') as permissionStore:
-        return csv.reader(permissionStore)
-        
+with open('configs/service_info.json') as f:
+    json_data = json.load(f)
 
-def getPermission(user):
-    with open('configs/permissions.csv', mode ='r') as permissionStore:
-        csv_data = csv.reader(permissionStore)
-        for line in csv_data:
-            if int(line[0]) == user:
-                return int(line[1])
-        return -1
-        
-def checkPermission(user, requiredPermission):
-    return getPermission(user) >= requiredPermission
+def getUserDetails(user_id):
+    return json_data[user_id]
 
-def setPermission(user, newPermission):
+def getUserPermissions(user_id):
+    return getUserDetails(user_id)["level"]
+
+def checkPermission(user_id, requiredPermission):
+    return getUserPermissions(user_id) >= requiredPermission
+
+def setPermission(user_id, requiredPermission):
     print("test")
