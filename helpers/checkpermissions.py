@@ -4,7 +4,7 @@ with open('configs/service_info.json') as f:
     json_data = json.load(f)
 
 def getUserDetails(user_id):
-    return int(json_data[user_id])
+    return int(json_data[str(user_id)])
 
 def getUserPermissions(user_id):
     return getUserDetails(user_id)["level"]
