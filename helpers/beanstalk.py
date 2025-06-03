@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from pystalk import BeanstalkClient
-from serviceinfo import getServiceField
+from helpers.serviceinfo import getServiceField
 
 client = BeanstalkClient('vm001.hippocampus-augmented.ts.net', 11300)
 
