@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+vm_shutdown = True
+
 def send_command(command):
     if False:
         print(command)
@@ -41,7 +43,7 @@ def restart_service(service):
 def services_running():
     return int(os.popen("docker ps | wc -l").read())
 
-for message in getAllMessages():
+for message in getAllMessages(os.popen("hostname").read()):
     splitMessage = message.split(" ")
     if not valid_service_bool(splitMessage[1]):
         continue
@@ -63,11 +65,13 @@ if services_running() <= 2:
             os.system("shutdown now")
 
 
-service_retry_count = 0
-service_timeout = 2 # Minutes until the vm shuts down when no services are running
+if vm_shutdown:
 
-while services_running <= 2:
-    service_retry_count += 1
-    time.sleep(30)
-    if service_retry_count == service_timeout*2:
-        os.system("shutdown now")
+    service_retry_count = 0
+    service_timeout = 2 # Minutes until the vm shuts down when no services are running
+
+    while services_running <= 2:
+        service_retry_count += 1
+        time.sleep(30)
+        if service_retry_count == service_timeout*2:
+            os.system("shutdown now")

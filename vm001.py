@@ -1,118 +1,68 @@
 from helpers.beanstalk import *
 from helpers.validservices import *
-from helpers.vmcontrol import startVM
-from helpers.checkpermissions import *
-from helpers.serviceinfo import getServiceField
 
-import os, json
-import discord
-from discord.ext import commands
+import os, time
 from dotenv import load_dotenv
 
-description = '''Athenaserver Discord Bot'''
-
-intents = discord.Intents.default()
-intents.members = True
-intents.message_content = True
-
-bot = commands.Bot(command_prefix='.', description=description, intents=intents, help_command=None)
+vm_shutdown = False
 
 load_dotenv()
 
-actions = ["start", "stop", "restart"]
-services = ["minecraft", "ftb", "sotf", "valheim", "beam"]
+def send_command(command):
+    if False:
+        print(command)
+    else:
+        os.system(command)
 
-no_permission_string = "You do not have permission to run this command, ask Alyssa to add you"
+def get_docker_compose_path(service):
+    return "/services/{}".format(service)
 
-async def check(ctx, service, action):
-
-    # Checks first to see if a user can execute a command
-    if not (checkPermission(ctx.message.author.id, getServiceField(service, "{}_permission".format(action)))):
-        await ctx.send(no_permission_string)
-        return True
-    
-    # Checks to see if the service is valid
-    if not await check_service_reply(ctx, service):
-        return True
-    
-    return False
-
-@bot.event
-async def on_ready():
-    print(f'Logged in as {bot.user} (ID: {bot.user.id})')
-    print('------')
-
-async def check_service_reply(ctx, service):
-    service_boolean = valid_service_bool(service)
-    if not service_boolean:
-        await ctx.send("That is not a valid service")
-    return service_boolean
-
-@bot.command(pass_context=True)
-async def help(ctx):
-    helpText = "Syntax: `.[action] [service]`\n"
-
-    helpText += "\nActions:\n"
-    for action in actions:
-        helpText += "- {}\n".format(action)
-
-    helpText += "\nServices:\n"
-    for service in services:
-        helpText += "- {}\n".format(service)
-
-    helpText += "Example `.start minecraft`"
-
-    await ctx.send(helpText)               
-
-
-@bot.command(pass_context=True)
-async def start(ctx, service: str):
-
-    # Checks to see if the message is valid
-    if await check(ctx, service, "start"):
-        return
-    
+def start_service(service):
     match service:
         case _:
-            startVM(getServiceField(service, "vm"))
-            sendMessage("start {}".format(convert_for_beanstalk(service)))
-            await ctx.send("Starting {} server...".format(service))
+            send_command("docker compose -f {}/docker-compose.yml up -d >> /dev/null 2>&1".format(get_docker_compose_path(service)))
 
 
-@bot.command(pass_context=True)
-async def stop(ctx, service: str):
-
-    # Checks to see if the message is valid
-    if await check(ctx, service, "stop"):
-        return
-    
+def stop_service(service):
     match service:
+        case _: 
+            send_command("docker compose -f {}/docker-compose.yml down >> /dev/null 2>&1".format(get_docker_compose_path(service)))
+
+def restart_service(service):
+    stop_service(service)
+    start_service(service)
+
+def services_running():
+    return int(os.popen("docker ps | wc -l").read())
+
+for message in getAllMessages(os.popen("hostname").read()):
+    splitMessage = message.split(" ")
+    if not valid_service_bool(splitMessage[1]):
+        continue
+    match splitMessage[0]:
+        case "start":
+            start_service(splitMessage[1])
+        case "stop":
+            stop_service(splitMessage[1])
+        case "restart":
+            restart_service(splitMessage[1])
         case _:
-            sendMessage("stop {}".format(convert_for_beanstalk(service)))
-            await ctx.send("Stopping {} server...".format(service))
+            print("'{}' is not in the service controls".format(splitMessage[0]))
+    time.sleep(15)
 
-@bot.command(pass_context=True)
-async def restart(ctx, service: str):
-    
-    # Checks to see if the message is valid
-    if await check(ctx, service, "restart"):
-        return
-    
-    match service:
-        case _:
-            startVM(getServiceField(service, "vm"))
-            sendMessage("restart {}".format(convert_for_beanstalk(service)))
-            await ctx.send("Restarting {} server...".format(service))
+if services_running() <= 2:
+    for retry in range(11):
+        time.sleep(30)
+        if retry == 10:
+            os.system("shutdown now")
 
-@bot.command(pass_context=True)
-async def permission(ctx, action, user):
-    match action:
-        case "add":
-            setPermission(user, type)
-            await ctx.send("Added user as type {}".format(type))
-        case "remove":
-            setPermission(user, type)
-            await ctx.send("Removed user as type {}".format(type))
+if vm_shutdown:
 
+    service_retry_count = 0
+    service_timeout = 2 # Minutes until the vm shuts down when no services are running
 
-bot.run(os.getenv('DISCORD_TOKEN'))
+    while services_running <= 2:
+        service_retry_count += 1
+        time.sleep(30)
+        if service_retry_count == service_timeout*2:
+            os.system("shutdown now")

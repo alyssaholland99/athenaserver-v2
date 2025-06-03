@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from pystalk import BeanstalkClient
+from serviceinfo import getServiceField
 
 client = BeanstalkClient('vm001.hippocampus-augmented.ts.net', 11300)
 
@@ -19,7 +20,7 @@ def sendMessage(message_to_send):
     print(message_to_send)
     client.put_job(message_to_send)
 
-def getAllMessages():
+def getAllMessages(vm):
     jobs = []
     for job in client.reserve_iter():
         try:
@@ -27,5 +28,6 @@ def getAllMessages():
         except Exception:
             client.release_job(job.job_id)
             raise
-        client.delete_job(job.job_id)
+        if getServiceField(str(job.job_data.decode('utf-8')).split(" ")[1], "vm") == vm: # Only delete the message if the vm for the service is running on the vm
+            client.delete_job(job.job_id)
     return jobs
