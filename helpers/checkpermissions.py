@@ -4,6 +4,7 @@ with open('configs/permissions.json') as f:
     json_data = json.load(f)
 
 def getUserDetails(user_id):
+    print (json_data)
     try:
         return int(json_data[str(user_id)])
     except:
