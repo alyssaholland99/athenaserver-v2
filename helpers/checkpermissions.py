@@ -16,6 +16,8 @@ def getUserPermissions(user_id):
     return getUserDetails(user_id)["level"]
 
 def checkPermission(user_id, requiredPermission):
+    print(getUserPermissions(user_id))
+    print(requiredPermission)
     return getUserPermissions(user_id) >= requiredPermission
 
 def setPermission(user_id, requiredPermission):
