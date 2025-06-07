@@ -2,7 +2,7 @@ from helpers.beanstalk import *
 from helpers.validservices import *
 from helpers.vmcontrol import startVM
 from helpers.checkpermissions import *
-from helpers.serviceinfo import getServiceField
+from helpers.serviceinfo import *
 
 import os, json
 import discord
@@ -72,10 +72,16 @@ async def start(ctx, service: str):
     if await check(ctx, service, "start"):
         return
     
+    required_service = getServiceAlias(service)
+
+    if required_service == False:
+        await ctx.send("This service does not exist")
+        return
+    
     match service:
         case _:
-            startVM(getServiceField(service, "vm"))
-            sendMessage("start {}".format(convert_for_beanstalk(service)))
+            startVM(getServiceField(required_service, "vm"))
+            sendMessage("start {}".format(required_service))
             await ctx.send("Starting {} server...".format(service))
 
 
@@ -86,9 +92,15 @@ async def stop(ctx, service: str):
     if await check(ctx, service, "stop"):
         return
     
+    required_service = getServiceAlias(service)
+
+    if required_service == False:
+        await ctx.send("This service does not exist")
+        return
+    
     match service:
         case _:
-            sendMessage("stop {}".format(convert_for_beanstalk(service)))
+            sendMessage("stop {}".format(required_service))
             await ctx.send("Stopping {} server...".format(service))
 
 @bot.command(pass_context=True)
@@ -98,10 +110,16 @@ async def restart(ctx, service: str):
     if await check(ctx, service, "restart"):
         return
     
+    required_service = getServiceAlias(service)
+
+    if required_service == False:
+        await ctx.send("This service does not exist")
+        return
+    
     match service:
         case _:
-            startVM(getServiceField(service, "vm"))
-            sendMessage("restart {}".format(convert_for_beanstalk(service)))
+            startVM(getServiceField(required_service, "vm"))
+            sendMessage("restart {}".format(required_service))
             await ctx.send("Restarting {} server...".format(service))
 
 @bot.command(pass_context=True)
