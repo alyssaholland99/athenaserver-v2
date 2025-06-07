@@ -58,6 +58,17 @@
         "stop_permission" : 1,
         "restart_permission" : 1
     },
+    "palworld" : {
+        "vm" : "vm002",
+        "port": 8211,
+        "url" : "server.alyssaserver.co.uk",
+        "aliases" : [
+            "palworld"
+        ],
+        "start_permission" : 0,
+        "stop_permission" : 1,
+        "restart_permission" : 1
+    },
     "immich" : {
         "vm" : "vm001",
         "port" : 80,
