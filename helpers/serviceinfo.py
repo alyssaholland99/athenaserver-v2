@@ -13,8 +13,8 @@ def getServiceNames():
     return service_json.keys()
 
 def getServiceAlias(user_input):
-    for service in getServiceNames():
-        for alias in getServiceField(service):
+    for service in getServiceNames()    :
+        for alias in getServiceField(service, "aliases"):
             if user_input == alias:
                 return service
     return False
